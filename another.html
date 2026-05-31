@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Another Page</title>
+  <style>
+    /* ── Page Content ── */
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #889df0 0%, #4a70d4 100%);
+      color: #fff;
+      text-align: center;
+    }
+    a {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* ── Loading Overlay (circular reveal) ── */
+    @property --r {
+      syntax: '<length>';
+      initial-value: 0px;
+      inherits: false;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      --r: 0px;
+      -webkit-mask-image: radial-gradient(
+        circle at center,
+        transparent var(--r),
+        black calc(var(--r) + 1px)
+      );
+      mask-image: radial-gradient(
+        circle at center,
+        transparent var(--r),
+        black calc(var(--r) + 1px)
+      );
+      transition: --r 2s ease;
+    }
+
+    .loading-overlay.revealing {
+      --r: 3000px;
+    }
+
+    .loading-overlay.hidden {
+      display: none;
+    }
+
+    /* ── Loading Content ── */
+    .loading-island {
+      width: 160px;
+      height: auto;
+      margin-bottom: 1.5rem;
+      opacity: 0.7;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .loading-text {
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      opacity: 0.6;
+      animation: pulse 1.5s ease-in-out infinite 0.3s;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Loading Overlay ═══ -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <svg class="loading-island" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Island silhouette -->
+      <path d="M60 140 Q100 80 140 140 Q160 150 180 140 L180 200 L20 200 L20 140 Q40 150 60 140Z" fill="#2a2a2a"/>
+      <!-- Palm tree trunk -->
+      <rect x="94" y="60" width="12" height="60" rx="4" fill="#4a3728"/>
+      <!-- Palm leaves -->
+      <ellipse cx="100" cy="50" rx="45" ry="14" fill="#1a3a1a" transform="rotate(-10 100 50)"/>
+      <ellipse cx="100" cy="50" rx="35" ry="10" fill="#2a5a2a" transform="rotate(15 100 50)"/>
+      <ellipse cx="100" cy="52" rx="25" ry="8" fill="#3a7a3a" transform="rotate(-5 100 52)"/>
+      <!-- Water circles -->
+      <circle cx="60" cy="170" r="6" fill="#1a1a3a" opacity="0.5"/>
+      <circle cx="130" cy="180" r="4" fill="#1a1a3a" opacity="0.4"/>
+      <circle cx="90" cy="185" r="3" fill="#1a1a3a" opacity="0.3"/>
+    </svg>
+    <div class="loading-text">LOADING</div>
+  </div>
+
+  <!-- ═══ Page Content ═══ -->
+  <div>
+    <h1>Welcome to the new page!</h1>
+    <p>This button now redirects to another page.</p>
+    <a href="/">Back to Letter Island</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlay = document.getElementById('loadingOverlay');
+
+      // Wait for the first frame so the initial style is painted
+      requestAnimationFrame(() => {
+        // Start the 2-second circular reveal transition
+        overlay.classList.add('revealing');
+      });
+
+      // After the transition completes, hide the overlay
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+      }, 2300); // 2s transition + 300ms buffer
+    });
+  </script>
+</body>
+</html>

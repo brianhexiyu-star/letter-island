@@ -1,0 +1,85 @@
+/* full page base */
+.island-root {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+
+  /* base warm island gradient */
+  background: linear-gradient(
+    180deg,
+    #fff4e0 0%,
+    #f0dcc0 50%,
+    #e5cbab 100%
+  );
+
+  /* font-family inherited from app */
+}
+
+/* content layer */
+.content {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* floating blobs */
+.blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 60% 40% 30% 70%;
+  filter: blur(50px);
+  opacity: 0.45;
+  animation: float 12s ease-in-out infinite;
+}
+
+.blob1 {
+  background: #ffcc88;
+  top: -120px;
+  left: -120px;
+}
+
+.blob2 {
+  background: #b8e6b8;
+  bottom: -150px;
+  right: -100px;
+  animation-delay: 3s;
+  width: 600px;
+  height: 600px;
+}
+
+.blob3 {
+  background: #ffe066;
+  top: 45%;
+  left: 55%;
+  animation-delay: 6s;
+  width: 350px;
+  height: 350px;
+}
+
+/* noise texture overlay (inline SVG data URI to avoid 403 on external host) */
+.noise {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* floating animation */
+@keyframes float {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-25px) scale(1.08);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+}
