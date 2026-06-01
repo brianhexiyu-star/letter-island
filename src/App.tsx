@@ -115,6 +115,26 @@ export default function App() {
   const [loadingMounted, setLoadingMounted] = useState(false);
   const [loadingActive, setLoadingActive] = useState(false);
   const [activeLetter, setActiveLetter] = useState<Letter | null>(null);
+  const params = new URLSearchParams(window.location.search);
+  const recipientName = params.get('name');
+
+  /* ── 从 URL 参数自动开启特定信件 ── */
+  useEffect(() => {
+    const id = params.get('l');
+    if (!id) return;
+    const letter = LETTERS.find(l => l.id === parseInt(id));
+    if (!letter) return;
+
+    playLetterChime();
+    setActiveLetter(letter);
+    setLoadingMounted(true);
+    setLoadingActive(true);
+    setTimeout(() => {
+      setLoadingActive(false);
+      setView('letter');
+    }, 3000);
+    setTimeout(() => setLoadingMounted(false), 4200);
+  }, []);
 
   const handleOpenLetter = useCallback(() => {
     playLetterChime();
@@ -263,8 +283,8 @@ export default function App() {
             {/* 左栏：装饰面板（手机隐藏，笔记本显示） */}
             <Card color="app-green" className="home-decor">
               <div className="home-decor-body">
-                <div className="home-decor-island">🧑🏾</div>
-                <div className="home-decor-title">To Karthik</div>
+                <div className="home-decor-island">{recipientName ? '📬' : '🧑🏾'}</div>
+                <div className="home-decor-title">To {recipientName || 'Karthik'}</div>
                 <div className="home-decor-sub">thank you for being such a great friend!</div>
                 <Divider type="line-teal" />
                 <div className="home-decor-icons">
