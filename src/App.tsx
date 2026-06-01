@@ -36,62 +36,66 @@ const LETTERS: Letter[] = [
   },
   {
     id: 2,
-    from: '小岛邮差',
+    from: 'me',
     pitchFactor: 0.85,
     content: [
-      '你好呀！',
+      'hi Luke',
       '',
-      '今天码头来了一个神秘的包裹，是寄给你的。闻起来有海水和野花的味道。',
+      'it is always weird to write a letter',
       '',
-      '对了，博物馆这周末有个深海生物特展。你不想错过哦！',
+      'a few years ago, I was a person who was afraid of social situations, whether with strangers or friends. I really want to thank you for your recognition and encouragement that made me more confident to talk to people.',
       '',
-      '回头见，',
-      'Pelly',
+      'I hope we can still be contacting after we graduate, mb through minecraft lmao',
+      'if I able to build a server, pls join:)',
+      '',
+      'sincerely, by Brian',
     ].join('\n'),
   },
   {
     id: 3,
-    from: '一位仰慕者',
+    from: 'me',
     pitchFactor: 0.95,
     content: [
-      '致最善良的你：',
+      'hi Sewan',
       '',
-      '我一直在远处看着你打理花园、帮助每一位岛上的居民。你的慷慨温暖了整个小岛。',
+      'although I just know you for a short time, I want to thank you for your persistence in talking with me when I usually don\'t talk much ',
       '',
-      '请知道，你的存在让这里变得更加美好。',
+      'I really appreciate your humor and patience, as well as your story narrative skills',
       '',
-      '致以温暖的问候，',
-      '某个默默欣赏你的人',
+      'sincerely',
+      'by Brian',
     ].join('\n'),
   },
   {
     id: 4,
-    from: 'K.K. 斯莱德',
+    from: 'me',
     pitchFactor: 0.6,
     content: [
-      '嘿嘿！',
+      'hi Caleb',
       '',
-      '我这周六晚上在广场有演出。我写了一首新歌——有种慵懒的律动，带一点波萨诺瓦的味道。你一定会喜欢的。',
+      'it has been a long time since we ever talked to each other. I really enjoy the time that we hang out and talk with each other.',
       '',
-      '叫上朋友们，带上乐器，最重要的是——带上你那会跳舞的双脚！',
+      'thank you for being my friend on the first place, I apologize for the time that I might have been very hurtful.',
       '',
-      'K.K.... 收工！',
-      '🎵',
+      'sincerely,',
+      'by Brian',
     ].join('\n'),
   },
   {
     id: 5,
-    from: '西施惠',
+    from: 'me',
     pitchFactor: 1.4,
     content: [
-      '大家早上好！',
+      'Happy birthday, Audrey! 🎉',
       '',
-      '通告一下——我们这周日早上10点有一个小岛清扫活动。广场会提供手套和垃圾袋。',
+      'I hope this letter finds you well. ',
       '',
-      '活动结束后，我为大家准备了新鲜的柠檬水。让我们一起把小岛变得更美吧！',
+      'it is glad to see you become older and wiser. Compare to few years ago, you seem to have a more clear objective than before. I really appreciate your ability to work hard toward your goals.',
       '',
-      '到时候见，',
-      '西施惠 🐾',
+      'from that, you get more recognitions from others, and you met the friends who has the same goal as you. although I didn\'t contribute to that, I\'m happy to see that, and I know I could never do that like you.',
+      '',
+      'sincerely, hope you have a wonderful year ahead!',
+      'by Brian',
     ].join('\n'),
   },
 ];
@@ -117,29 +121,19 @@ export default function App() {
   const [activeLetter, setActiveLetter] = useState<Letter | null>(null);
   const params = new URLSearchParams(window.location.search);
   const recipientName = params.get('name');
+  const iconEmoji = params.get('icon');
+  const letterId = params.get('l');
 
-  /* ── 从 URL 参数自动开启特定信件 ── */
-  useEffect(() => {
-    const id = params.get('l');
-    if (!id) return;
-    const letter = LETTERS.find(l => l.id === parseInt(id));
-    if (!letter) return;
-
-    playLetterChime();
-    setActiveLetter(letter);
-    setLoadingMounted(true);
-    setLoadingActive(true);
-    setTimeout(() => {
-      setLoadingActive(false);
-      setView('letter');
-    }, 3000);
-    setTimeout(() => setLoadingMounted(false), 4200);
-  }, []);
+  const isBirthday = recipientName === 'Audrey';
+  const pageTitle = isBirthday ? '🎂 Happy birthday letter' : '😁 thank you letter';
+  const pageSubtitle = isBirthday ? 'Happy Birthday!!!' : 'a letter assignment from senior seminar';
 
   const handleOpenLetter = useCallback(() => {
     playLetterChime();
-    const letter = LETTERS[0];
-    setActiveLetter(letter);
+    const letter = letterId
+      ? LETTERS.find(l => l.id === parseInt(letterId))
+      : undefined;
+    setActiveLetter(letter || LETTERS[0]);
 
     // 1 — 加载遮罩出现，播放小岛动画
     setLoadingMounted(true);
@@ -158,7 +152,6 @@ export default function App() {
   }, []);
 
   /* ── 标题打字机效果 ── */
-  const TITLE = '😁 thank you letter';
   const [displayedTitle, setDisplayedTitle] = useState('');
   const [showCursor, setShowCursor] = useState(true);
 
@@ -170,8 +163,8 @@ export default function App() {
     setShowCursor(true);
 
     const interval = setInterval(() => {
-      if (i < TITLE.length) {
-        setDisplayedTitle(TITLE.slice(0, i + 1));
+      if (i < pageTitle.length) {
+        setDisplayedTitle(pageTitle.slice(0, i + 1));
         i++;
       } else {
         clearInterval(interval);
@@ -218,8 +211,9 @@ export default function App() {
 
   const handleReadAnother = useCallback(() => {
     playLetterChime();
+    setView('home');
+    setActiveLetter(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => window.location.reload(), 1200);
   }, []);
 
   /* ── 信件页文本分段揭示辅助 ── */
@@ -283,7 +277,7 @@ export default function App() {
             {/* 左栏：装饰面板（手机隐藏，笔记本显示） */}
             <Card color="app-green" className="home-decor">
               <div className="home-decor-body">
-                <div className="home-decor-island">{recipientName ? '📬' : '🧑🏾'}</div>
+                <div className="home-decor-island">{iconEmoji || (recipientName ? '📬' : '🧑🏾')}</div>
                 <div className="home-decor-title">To {recipientName || 'Karthik'}</div>
                 <div className="home-decor-sub">thank you for being such a great friend!</div>
                 <Divider type="line-teal" />
@@ -310,7 +304,7 @@ export default function App() {
                 </h1>
                 <Divider type="wave-yellow" />
                 <p className="hero-subtitle">
-                  a letter assigment from senior seminar
+                  {pageSubtitle}
                   <br />
                   click the mailbox below to read the letter!
                 </p>
